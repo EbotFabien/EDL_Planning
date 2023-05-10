@@ -50,7 +50,7 @@ def create():
     return jsonify(finzl_), 200
         
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@edl.route('/edl/modifier/<ide>', methods=['PUT'])
+@edl.route('/edl/update/<ide>', methods=['PUT'])
 def update(ide):
     todo = db_edl.document(ide)
     final_ = {}

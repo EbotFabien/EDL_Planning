@@ -18,17 +18,7 @@ def getDataByID(bd,id):
 @user.route('/user/ajouter', methods=['POST'])
 def create():
     data_= request.json
-    # try:
-    #     id=[doc.to_dict() for doc in db_user.stream()]#[-1]['id']
-    #     id=[int(i['id']) for i in id]
-    #     id.sort()
-    #     id=str(id[-1]+1)
-    # except:
-    #     id='0'
-    # if id:
-    #     request.json['id']=str(id)
-      #  request.json['pass']=bcrypt.generate_password_hash(request.json['pass']).decode('utf-8')
-   # data_['user'] = getDataByID(db_user,data_['user'])
+    
     temps,res_= db_user.add(data_)
     todo = db_user.document(res_.id).get()
     finzl_= todo.to_dict()

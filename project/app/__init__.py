@@ -14,7 +14,7 @@ from flask_cors import CORS
 
 
 
-cred = credentials.Certificate('C:/EDL_Planning_app/project/app/key.json')
+cred = credentials.Certificate('C:/new services/EDL_PLANING/EDL_Planning/project/app/dbedl.json')
 default_app = initialize_app(cred)
 db = firestore.client()
 bcrypt = Bcrypt()
