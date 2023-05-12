@@ -25,7 +25,7 @@ def read():
     return jsonify(all_todos), 200
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@rdv.route('/rdv/<int:ide>', methods=['GET'])
+@rdv.route('/rdv/<ide>', methods=['GET'])
 def read_ind(ide):
 
 
@@ -40,7 +40,7 @@ def read_ind(ide):
 
 
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@rdv.route('/rdv/update/<int:ide>', methods=['POST', 'PUT'])
+@rdv.route('/rdv/update/<ide>', methods=['POST', 'PUT'])
 def update(ide):
         todo_id = str(ide)
         todo = db_rdv.document(todo_id).get()
@@ -51,7 +51,7 @@ def update(ide):
             return jsonify({"success": True}), 200
         
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@rdv.route('/rdv/delete/<int:ide>', methods=['GET', 'DELETE'])
+@rdv.route('/rdv/delete/<ide>', methods=['GET', 'DELETE'])
 def delete(ide):
     todo_id = str(ide)
     todo = db_rdv.document(todo_id).get()
