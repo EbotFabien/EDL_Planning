@@ -25,7 +25,7 @@ def read():
     return jsonify(all_todos), 200
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@participant.route('/participant/<int:ide>', methods=['GET'])
+@participant.route('/participant/<ide>', methods=['GET'])
 def read_ind(ide):
 
 
@@ -40,7 +40,7 @@ def read_ind(ide):
 
 
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@participant.route('/participant/update/<int:ide>', methods=['POST', 'PUT'])
+@participant.route('/participant/update/<ide>', methods=['POST', 'PUT'])
 def update(ide):
         todo_id = str(ide)
         todo = db_participant.document(todo_id).get()
@@ -51,7 +51,7 @@ def update(ide):
             return jsonify({"success": True}), 200
         
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@participant.route('/participant/delete/<int:ide>', methods=['GET', 'DELETE'])
+@participant.route('/participant/delete/<ide>', methods=['GET', 'DELETE'])
 def delete(ide):
     todo_id = str(ide)
     todo = db_participant.document(todo_id).get()

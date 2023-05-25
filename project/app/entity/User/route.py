@@ -36,7 +36,7 @@ def read():
     return jsonify(all_todos), 200
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@user.route('/user/<int:ide>', methods=['GET'])
+@user.route('/user/<ide>', methods=['GET'])
 def read_ind(ide):
 
 
@@ -51,7 +51,7 @@ def read_ind(ide):
 
 
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@user.route('/user/update/<int:ide>', methods=['POST', 'PUT'])
+@user.route('/user/update/<ide>', methods=['POST', 'PUT'])
 def update(ide):
         todo_id = str(ide)
         todo = db_user.document(todo_id).get()
@@ -62,7 +62,7 @@ def update(ide):
             return jsonify({"success": True}), 200
         
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@user.route('/user/delete/<int:ide>', methods=['GET', 'DELETE'])
+@user.route('/user/delete/<ide>', methods=['GET', 'DELETE'])
 def delete(ide):
     todo_id = str(ide)
     todo = db_user.document(todo_id).get()
