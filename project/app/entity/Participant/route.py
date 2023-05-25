@@ -60,3 +60,6 @@ def delete(ide):
     else:
         db_participant.document(todo_id).delete()
         return jsonify({"success": True}), 200
+    
+    
+

@@ -1,7 +1,11 @@
-from flask import render_template, url_for,flash,redirect,request,abort,Blueprint,jsonify
+from flask import app, render_template, url_for,flash,redirect,request,abort,Blueprint,jsonify
 from app import db,bcrypt
 from flask_cors import CORS,cross_origin
-
+from flask_firebase_admin import FirebaseAdmin      
+from firebase_admin import  storage
+from flask import Flask, request
+import os
+import shutil
 
 
 db_participant = db.collection('participant')
@@ -39,7 +43,19 @@ def create():
     i=1
     for rdv in data_['rdvs'].values():
         rdv["intervenant"]= getDataByID(db_user,rdv['intervenant'])
+    
+    '''   uploaded_file =request.files['photo']
+    file_path = os.path.join( "/",uploaded_file.filename)
+    uploaded_file.save(file_path)
+    url=file_path
+    fileName = url
+    bucket = storage.bucket()
+    blob = bucket.blob(fileName)
+    blob.upload_from_filename(fileName)
+       
+    blob.make_public()
            
+    data_['photo'] = blob.public_url '''     
     data_['logement'] = getDataByID(db_logement,data_['logement'])
     data_['user'] = getDataByID(db_user,data_['user'])
  
@@ -101,3 +117,37 @@ def delete(ide):
     else:
         db_edl.document(todo_id).delete()
         return jsonify({"success": True}), 200
+    
+    
+@cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
+@edl.route('/picture', methods=['POST'])
+def send_individual_picture():
+       
+       uploaded_file =request.files['photo']
+       file_path = os.path.join( "/",uploaded_file.filename)
+       uploaded_file.save(file_path)
+       url=file_path
+       fileName = url
+       bucket = storage.bucket()
+       blob = bucket.blob(fileName)
+       blob.upload_from_filename(fileName)
+       
+       blob.make_public()
+       
+       
+       print(blob.public_url)
+       return jsonify({"success": True}), 200
+
+    
+    
+    
+''' @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
+@edl.route('/synchro', methods=['GET', 'DELETE'])
+def synchro(ide):
+    todo_id = str(ide)
+    todo = db_participant.document(todo_id).get()
+    if todo.to_dict() is None:
+        return jsonify({"Fail": "donnee n'existe pas"}), 400
+    else:
+        db_participant.document(todo_id).delete()
+        return jsonify({"success": True}), 200 '''
