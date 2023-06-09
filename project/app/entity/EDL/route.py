@@ -39,9 +39,13 @@ def create():
     i=1
     for rdv in data_['rdvs'].values():
         rdv["intervenant"]= getDataByID(db_user,rdv['intervenant'])
+
+    id_logement=data_['logement']
            
     data_['logement'] = getDataByID(db_logement,data_['logement'])
     data_['user'] = getDataByID(db_user,data_['user'])
+
+    data_['logement']['id_'] = id_logement
  
     temps,res_= db_edl.add(data_)
     todo = db_edl.document(res_.id).get()
