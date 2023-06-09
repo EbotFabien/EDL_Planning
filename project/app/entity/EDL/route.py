@@ -54,10 +54,14 @@ def create():
     blob.upload_from_filename(fileName)
        
     blob.make_public()
+
+    id_logement=data_['logement']
            
     data_['photo'] = blob.public_url '''     
     data_['logement'] = getDataByID(db_logement,data_['logement'])
     data_['user'] = getDataByID(db_user,data_['user'])
+
+    data_['logement']['id_'] = id_logement
  
     temps,res_= db_edl.add(data_)
     todo = db_edl.document(res_.id).get()
