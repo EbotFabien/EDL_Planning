@@ -140,6 +140,26 @@ def send_individual_picture():
 
     
     
+@cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
+@edl.route('/edl/synch/<ide>', methods=['POST', 'PUT'])
+def synch(ide ):
+         todo = db_edl.document(ide)
+         final_ = {}
+     
+         if todo is None:
+            return jsonify({"Fail": "donnee n'existe pas"}), 400
+         else:
+           todo.update(request.json)
+           todo = db_edl.document(ide).get()
+           final_= todo.to_dict()
+        
+         final_["_id"] = ide
+         print(final_["_id"])
+         return jsonify(final_), 20
+        
+        
+        
+    
     
 ''' @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
 @edl.route('/synchro', methods=['GET', 'DELETE'])
