@@ -82,6 +82,7 @@ def read():
         final_.append(temp)
     return jsonify(final_), 200
     
+#done
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @edl.route('/edl/<ide>', methods=['GET'])
