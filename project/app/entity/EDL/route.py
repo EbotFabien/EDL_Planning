@@ -55,9 +55,11 @@ def create():
        
     blob.make_public()
            
-    data_['photo'] = blob.public_url '''     
+    data_['photo'] = blob.public_url '''  
+    id_logement=data_['logement']   
     data_['logement'] = getDataByID(db_logement,data_['logement'])
     data_['user'] = getDataByID(db_user,data_['user'])
+    data_['logement']['_id']=id_logement
  
     temps,res_= db_edl.add(data_)
     todo = db_edl.document(res_.id).get()
