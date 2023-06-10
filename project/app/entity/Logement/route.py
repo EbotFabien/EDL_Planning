@@ -6,6 +6,8 @@ from flask_cors import CORS,cross_origin
 
 db_logement = db.collection('logement')
 
+db_user = db.collection('user')
+
 logement = Blueprint('logement',__name__)
 
 
@@ -60,3 +62,33 @@ def delete(ide):
     else:
         db_logement.document(todo_id).delete()
         return jsonify({"success": True}), 200
+    
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@logement.route('/logement/compte_client/<ide>', methods=['GET'])
+def getLogementByCompteClient(idClient):
+    
+    todo = db_logement.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['client']["_id"]) == str(idClient):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@logement.route('/logement/user/<ide>', methods=['GET'])
+def getLogementByUser(iduser):
+    user= db_user.document(iduser).get()
+    client=user.to_dict()
+    
+    todo = db_logement.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['client']["_id"]) == str(client['compte_client']):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200

@@ -61,5 +61,48 @@ def delete(ide):
         db_participant.document(todo_id).delete()
         return jsonify({"success": True}), 200
     
-    
 
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@participant.route('/logement/user/<ide>', methods=['GET'])
+def getparticipantByUser(idClient):
+    
+    todo = db_participant.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['client']["_id"]) == str(idClient):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@participant.route('/participant/compte_client/<ide>', methods=['GET'])
+def getParticipantByCompteClient(idClient):
+    
+    todo = db_participant.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['client']["_id"]) == str(idClient):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@participant.route('/participant/compte_client/<ide, role>', methods=['GET'])
+def getParticipant_RoleByCompteClient(idClient,role):
+    
+    todo = db_participant.stream()
+    role = db_participant.document(role).get()
+    user_role = role.to_dict()
+    
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['participant']["id"]) == str(user_role) and str(temp["client"])==str(idClient):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200

@@ -56,6 +56,7 @@ def create():
     blob.make_public()
            
     data_['photo'] = blob.public_url '''  
+    
     id_logement=data_['logement']   
     data_['logement'] = getDataByID(db_logement,data_['logement'])
     data_['user'] = getDataByID(db_user,data_['user'])
@@ -161,6 +162,37 @@ def synch(ide ):
          return jsonify(final_), 20
         
         
+        
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/edl/compte_client/<ide>', methods=['GET'])
+def getEdlByCompteClient(idClient):
+    
+    todo = db_edl.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['logement']['client']["_id"]) == str(idClient):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/edl/user/<ide>', methods=['GET'])
+def getEdlByUser(email):
+    todo = db_edl.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['user']['email']) == str(email):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+
+
+
         
     
     
