@@ -56,11 +56,12 @@ def create():
     blob.make_public()
            
     data_['photo'] = blob.public_url '''  
-    
+    id_user= data_['user']
     id_logement=data_['logement']   
     data_['logement'] = getDataByID(db_logement,data_['logement'])
     data_['user'] = getDataByID(db_user,data_['user'])
     data_['logement']['_id']=id_logement
+    data_['user']['_id']= id_user
  
     temps,res_= db_edl.add(data_)
     todo = db_edl.document(res_.id).get()
@@ -191,6 +192,37 @@ def getEdlByUser(email):
     return jsonify(final_), 200
 
 
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/edl/user_compte_client/<ide>', methods=['GET'])
+def getUserByCompteClient(idClient):
+    
+    todo = db_user.stream()
+    final_ = []
+    temp = {}
+    for tod in todo :
+       temp = tod.to_dict() 
+       if str(temp['logement']['user']["_id"]) == str(idClient):
+    
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/edl/part_compte_client/<ide>', methods=['GET'])
+def getParticipantByCompteClient(idClient):
+    
+    todo = db_participant.stream()
+    final_ = []
+    temp = {}
+    for tod in todo :
+       temp = tod.to_dict() 
+       if str(temp['logement']['user']["_id"]) == str(idClient):
+    
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
 
 
         
