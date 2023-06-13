@@ -25,7 +25,7 @@ def create():
     finzl_= todo.to_dict()
     finzl_['id_'] = res_.id
     return jsonify(finzl_), 200'''
-    return 200
+    return jsonify(request.json) ,200
      
      
   
@@ -57,12 +57,16 @@ def read_signe(ide):
 
 
     todo_id = str(ide)
-    query_ref = db_user.where(u'compte_client.id', u'==', todo_id)
+    query_ref = db_user.stream()
     all_todos = []
-    for doc in query_ref.stream():
+    for doc in query_ref:
         v=doc.to_dict()
-        v['id']=doc.id
-        all_todos.append(v)
+        v['id']=doc.id 
+        try:
+            if v['compte_client']['id'] == todo_id :
+                all_todos.append(v)
+        except:
+            pass
     return jsonify(all_todos), 200    
     
 

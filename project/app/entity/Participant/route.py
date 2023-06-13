@@ -18,7 +18,7 @@ def create():
     #finzl_= todo.to_dict()
     #finzl_['id_'] = res_.id
     #return jsonify(finzl_), 200
-    return 200
+    return jsonify(request.json),200
     
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/tous', methods=['GET'])
@@ -32,12 +32,16 @@ def read_signe(ide):
 
 
     todo_id = str(ide)
-    query_ref = db_participant.where(u'compte_client', u'==', todo_id)
+    query_ref = db_participant.stream()
     all_todos = []
-    for doc in query_ref.stream():
+    for doc in query_ref:
         v=doc.to_dict()
         v['id']=doc.id
-        all_todos.append(v)
+        try:
+            if v['compte_client'] == todo_id:
+                all_todos.append(v)
+        except:
+            pass
     return jsonify(all_todos), 200    
  
 
