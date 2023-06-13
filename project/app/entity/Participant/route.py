@@ -95,21 +95,21 @@ def getparticipantByUser(idClient):
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/compte_client/<ide>', methods=['GET'])
-def getParticipantByCompteClient(idClient):
+def getParticipantByCompteClient(ide):
     
     todo = db_participant.stream()
     final_ = []
     temp = {}
     for tod in todo:
         temp = tod.to_dict()
-        if str(temp['client']["_id"]) == str(idClient):
+        if str(temp['client']["_id"]) == str(ide):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@participant.route('/participant/compte_client/<ide, role>', methods=['GET'])
-def getParticipant_RoleByCompteClient(idClient,role):
+@participant.route('/participant/compte_client/<ide>/<role>', methods=['GET'])
+def getParticipant_RoleByCompteClient(ide,role):
     
     todo = db_participant.stream()
     role = db_participant.document(role).get()
@@ -119,7 +119,7 @@ def getParticipant_RoleByCompteClient(idClient,role):
     temp = {}
     for tod in todo:
         temp = tod.to_dict()
-        if str(temp['participant']["id"]) == str(user_role) and str(temp["client"])==str(idClient):
+        if str(temp['participant']["id"]) == str(user_role) and str(temp["client"])==str(ide):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200

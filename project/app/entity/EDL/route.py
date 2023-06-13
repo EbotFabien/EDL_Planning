@@ -1,7 +1,7 @@
 from flask import app, render_template, url_for,flash,redirect,request,abort,Blueprint,jsonify
 from app import db,bcrypt
 from flask_cors import CORS,cross_origin
-from flask_firebase_admin import FirebaseAdmin      
+#from flask_firebase_admin import FirebaseAdmin      
 from firebase_admin import  storage
 from flask import Flask, request
 import os
