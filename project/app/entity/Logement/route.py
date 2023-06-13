@@ -6,12 +6,18 @@ from flask_cors import CORS,cross_origin
 
 db_logement = db.collection('logement')
 
+db_user = db.collection('user')
+
 logement = Blueprint('logement',__name__)
 
 
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
 @logement.route('/logement/ajouter', methods=['POST'])
 def create():
+    data_ = request.json
+    id_user= data_['user']
+    data_['user']['_id']= id_user
+    
     temps,res_= db_logement.add(request.json)
     todo = db_logement.document(res_.id).get()
     finzl_= todo.to_dict()
@@ -60,3 +66,34 @@ def delete(ide):
     else:
         db_logement.document(todo_id).delete()
         return jsonify({"success": True}), 200
+    
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@logement.route('/logement/compte_client/<ide>', methods=['GET'])
+def getLogementByCompteClient(idClient):
+    
+    todo = db_logement.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['client']["_id"]) == str(idClient):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@logement.route('/logement/user/<ide>', methods=['GET'])
+def getLogementByUser(iduser):
+    user_id= db_user.document(iduser).get()
+    user = user_id.to_dict()
+    
+    todo = db_logement.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['user']["_id"]) == str(user["id"]):
+            
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
