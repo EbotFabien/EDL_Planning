@@ -25,6 +25,21 @@ def read():
     return jsonify(all_todos), 200
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@participant.route('/participant/signataire/<ide>', methods=['GET'])
+def read_signe(ide):
+
+
+    todo_id = str(ide)
+    query_ref = db_participant.where(u'compte_client', u'==', todo_id)
+    all_todos = []
+    for doc in query_ref.stream():
+        v=doc.to_dict()
+        v['id']=doc.id
+        all_todos.append(v)
+    return jsonify(all_todos), 200    
+ 
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/<ide>', methods=['GET'])
 def read_ind(ide):
 

@@ -49,6 +49,21 @@ def read_ind(ide):
         else:
             return jsonify(todo.to_dict()), 200
 
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@user.route('/user/signataire/<ide>', methods=['GET'])
+def read_signe(ide):
+
+
+    todo_id = str(ide)
+    query_ref = db_user.where(u'compte_client.id', u'==', todo_id)
+    all_todos = []
+    for doc in query_ref.stream():
+        v=doc.to_dict()
+        v['id']=doc.id
+        all_todos.append(v)
+    return jsonify(all_todos), 200    
+    
+
 
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
 @user.route('/user/update/<ide>', methods=['POST', 'PUT'])
