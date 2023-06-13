@@ -12,11 +12,13 @@ participant = Blueprint('participant',__name__)
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
 @participant.route('/participant/ajouter', methods=['POST'])
 def create():
-    temps,res_= db_participant.add(request.json)
-    todo = db_participant.document(res_.id).get()
-    finzl_= todo.to_dict()
-    finzl_['id_'] = res_.id
-    return jsonify(finzl_), 200
+    db_participant.document(request.json['id']).set(request.json)
+    #temps,res_= db_participant.add(request.json)
+    #todo = db_participant.document(res_.id).get()
+    #finzl_= todo.to_dict()
+    #finzl_['id_'] = res_.id
+    #return jsonify(finzl_), 200
+    return 200
     
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/tous', methods=['GET'])
