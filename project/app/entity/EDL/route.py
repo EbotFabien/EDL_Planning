@@ -95,6 +95,7 @@ def read():
     for tod in todo:
         temp = tod.to_dict()
         temp['_id'] = tod.id
+        print(temp)
         final_.append(temp)
     return jsonify(final_), 200
     
@@ -180,13 +181,13 @@ def getEdlByCompteClient(idClient):
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @edl.route('/edl/user/<ide>', methods=['GET'])
-def getEdlByUser(email):
+def getEdlByUser(ide):
     todo = db_edl.stream()
     final_ = []
     temp = {}
     for tod in todo:
         temp = tod.to_dict()
-        if str(temp['user']['email']) == str(email):
+        if str(temp['user']['_id']) == str(ide):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
@@ -223,18 +224,3 @@ def getParticipantByCompteClient(idClient):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
-
-
-        
-    
-    
-''' @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
-@edl.route('/synchro', methods=['GET', 'DELETE'])
-def synchro(ide):
-    todo_id = str(ide)
-    todo = db_participant.document(todo_id).get()
-    if todo.to_dict() is None:
-        return jsonify({"Fail": "donnee n'existe pas"}), 400
-    else:
-        db_participant.document(todo_id).delete()
-        return jsonify({"success": True}), 200 '''
