@@ -12,11 +12,13 @@ participant = Blueprint('participant',__name__)
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
 @participant.route('/participant/ajouter', methods=['POST'])
 def create():
-    temps,res_= db_participant.add(request.json)
-    todo = db_participant.document(res_.id).get()
-    finzl_= todo.to_dict()
-    finzl_['id_'] = res_.id
-    return jsonify(finzl_), 200
+    db_participant.document(request.json['id']).set(request.json)
+    #temps,res_= db_participant.add(request.json)
+    #todo = db_participant.document(res_.id).get()
+    #finzl_= todo.to_dict()
+    #finzl_['id_'] = res_.id
+    #return jsonify(finzl_), 200
+    return jsonify(request.json),200
     
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/tous', methods=['GET'])
@@ -32,6 +34,25 @@ def read():
         print(temp)
         final_.append(temp)
     return jsonify(final_), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@participant.route('/participant/signataire/<ide>', methods=['GET'])
+def read_signe(ide):
+
+
+    todo_id = str(ide)
+    query_ref = db_participant.stream()
+    all_todos = []
+    for doc in query_ref:
+        v=doc.to_dict()
+        v['id']=doc.id
+        try:
+            if v['compte_client'] == todo_id:
+                all_todos.append(v)
+        except:
+            pass
+    return jsonify(all_todos), 200    
+ 
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/<ide>', methods=['GET'])
@@ -87,21 +108,21 @@ def getparticipantByUser(idClient):
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/compte_client/<ide>', methods=['GET'])
-def getParticipantByCompteClient(idClient):
+def getParticipantByCompteClient(ide):
     
     todo = db_participant.stream()
     final_ = []
     temp = {}
     for tod in todo:
         temp = tod.to_dict()
-        if str(temp['client']["_id"]) == str(idClient):
+        if str(temp['client']["_id"]) == str(ide):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
 
-''' @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@participant.route('/participant/compte_client/<ide, role>', methods=['GET'])
-def getParticipant_RoleByCompteClient(idClient,role):
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@participant.route('/participant/compte_client/<ide>/<role>', methods=['GET'])
+def getParticipant_RoleByCompteClient(ide,role):
     
     todo = db_participant.stream()
     role = db_participant.document(role).get()
@@ -111,8 +132,7 @@ def getParticipant_RoleByCompteClient(idClient,role):
     temp = {}
     for tod in todo:
         temp = tod.to_dict()
-        if str(temp['participant']["id"]) == str(user_role) and str(temp["client"])==str(idClient):
+        if str(temp['participant']["id"]) == str(user_role) and str(temp["client"])==str(ide):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
- '''

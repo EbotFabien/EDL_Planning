@@ -17,13 +17,15 @@ def getDataByID(bd,id):
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
 @user.route('/user/ajouter', methods=['POST'])
 def create():
-    data_= request.json
+    db_user.document(request.json['id']).set(request.json)
+    '''data_= request.json
     
     temps,res_= db_user.add(data_)
     todo = db_user.document(res_.id).get()
     finzl_= todo.to_dict()
     finzl_['id_'] = res_.id
-    return jsonify(finzl_), 200
+    return jsonify(finzl_), 200'''
+    return jsonify(request.json) ,200
      
      
   
@@ -48,6 +50,25 @@ def read_ind(ide):
             return jsonify({"Fail": "donnee n'exist pas"}), 400
         else:
             return jsonify(todo.to_dict()), 200
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@user.route('/user/signataire/<ide>', methods=['GET'])
+def read_signe(ide):
+
+
+    todo_id = str(ide)
+    query_ref = db_user.stream()
+    all_todos = []
+    for doc in query_ref:
+        v=doc.to_dict()
+        v['id']=doc.id 
+        try:
+            if v['compte_client']['id'] == todo_id :
+                all_todos.append(v)
+        except:
+            pass
+    return jsonify(all_todos), 200    
+    
 
 
 @cross_origin(origin=["http://127.0.0.1:5274","http://195.15.228.250","*"],headers=['Content-Type','Authorization'],automatic_options=False)
