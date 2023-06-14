@@ -54,24 +54,7 @@ def read_signe(ide):
     return jsonify(all_todos), 200    
  
 
-@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@participant.route('/participant/signataire/<ide>', methods=['GET'])
-def read_signe(ide):
 
-
-    todo_id = str(ide)
-    query_ref = db_participant.stream()
-    all_todos = []
-    for doc in query_ref:
-        v=doc.to_dict()
-        v['id']=doc.id
-        try:
-            if v['compte_client'] == todo_id:
-                all_todos.append(v)
-        except:
-            pass
-    return jsonify(all_todos), 200    
- 
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/<ide>', methods=['GET'])
