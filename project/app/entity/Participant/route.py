@@ -37,7 +37,7 @@ def read():
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
 @participant.route('/participant/signataire/<ide>', methods=['GET'])
-def read_signe(ide):
+def read_signe1(ide):
 
 
     todo_id = str(ide)

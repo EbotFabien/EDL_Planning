@@ -13,6 +13,7 @@ db_edl= db.collection('edl')
 db_user = db.collection('user')
 db_rdv = db.collection('rdv')
 db_logement = db.collection('logement')
+db_type_log = db.collection('type_log')
 
 edl = Blueprint('edl',__name__)
 
@@ -42,7 +43,10 @@ def create():
     
     i=1
     for rdv in data_['rdvs'].values():
-        rdv["intervenant"]= getDataByID(db_user,rdv['intervenant'])
+        if rdv["intervenant"]['table'] =="participant":
+            rdv["intervenant"] =  getDataByID(db_participant,rdv["intervenant"]['id'])
+        else:
+            rdv["intervenant"] =  getDataByID(db_user,rdv["intervenant"]['id'])
     
     '''   uploaded_file =request.files['photo']
     file_path = os.path.join( "/",uploaded_file.filename)
@@ -56,12 +60,12 @@ def create():
     blob.make_public()
            
     data_['photo'] = blob.public_url '''  
-    id_user= data_['user']
+    id_user= data_['created_by']
     id_logement=data_['logement']   
     data_['logement'] = getDataByID(db_logement,data_['logement'])
-    data_['user'] = getDataByID(db_user,data_['user'])
+    data_['created_by'] = getDataByID(db_user,data_['created_by'])
     data_['logement']['_id']=id_logement
-    data_['user']['_id']= id_user
+    data_['created_by']['_id']= id_user
  
     temps,res_= db_edl.add(data_)
     todo = db_edl.document(res_.id).get()
@@ -166,15 +170,14 @@ def synch(ide ):
         
         
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@edl.route('/edl/compte_client/<ide>', methods=['GET'])
+@edl.route('/edl/compte_client/<idClient>', methods=['GET'])
 def getEdlByCompteClient(idClient):
-    
     todo = db_edl.stream()
     final_ = []
     temp = {}
     for tod in todo:
         temp = tod.to_dict()
-        if str(temp['logement']['client']["_id"]) == str(idClient):
+        if temp['logement']['client']["_id"] == str(idClient):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
@@ -188,6 +191,20 @@ def getEdlByUser(ide):
     for tod in todo:
         temp = tod.to_dict()
         if str(temp['user']['_id']) == str(ide):
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200
+
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/logement/cc/<ide>', methods=['GET'])
+def getLogementByCompteClient(ide):
+    todo = db_logement.stream()
+    final_ = []
+    temp = {}
+    for tod in todo:
+        temp = tod.to_dict()
+        if str(temp['client']['_id']) == str(ide):
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
@@ -211,16 +228,60 @@ def getUserByCompteClient(idClient):
 
 
 @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
-@edl.route('/edl/part_compte_client/<ide>', methods=['GET'])
-def getParticipantByCompteClient(idClient):
+@edl.route('/edl/part_compte_client/<id>', methods=['GET'])
+def getParticipantByCompteClient(id):
     
     todo = db_participant.stream()
     final_ = []
     temp = {}
     for tod in todo :
        temp = tod.to_dict() 
-       if str(temp['logement']['user']["_id"]) == str(idClient):
+       if str(temp['logement']['user']["_id"]) == str(id):
     
             temp['_id'] = tod.id
             final_.append(temp)
     return jsonify(final_), 200
+
+
+@cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/edl/pie_cles_cpte/<id>', methods=['GET'])
+def getPieceClesCmpteurByTypLog(id):
+    
+    final_ = []
+    temp = {}
+    todo = db_type_log.stream()    
+    
+    for tod in todo:
+        temp = tod.to_dict()
+        #temp['_id'] = tod.id
+        temp['piece']
+        temp['cles']
+        temp['compteur']
+        final={
+            'piece':temp['piece'],
+            'cles':temp['cles'],
+            'compteur':temp['compteur']
+        }
+        print(temp)
+        final_.append(final)
+    return jsonify(final_), 200
+    
+    
+
+
+''' @cross_origin(origin=["http://127.0.0.1","http://195.15.228.250","*"],headers=['Content-Type','Authorization'])
+@edl.route('/edl/edl_ac/<id_ac>', methods=['GET'])
+def getEdlByAgentconstat(id_ac):
+    todo = db_edl.stream()
+    final_ = []
+    temp = {}
+    for tod in todo :
+       temp = tod.to_dict() 
+       if str(temp['signataires']['signataire']["_id"]) == str(id_ac):
+    
+            temp['_id'] = tod.id
+            final_.append(temp)
+    return jsonify(final_), 200 '''
+
+
+
