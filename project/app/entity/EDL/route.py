@@ -254,9 +254,7 @@ def getPieceClesCmpteurByTypLog(id):
     for tod in todo:
         temp = tod.to_dict()
         #temp['_id'] = tod.id
-        temp['piece']
-        temp['cles']
-        temp['compteur']
+        
         final={
             'piece':temp['piece'],
             'cles':temp['cles'],
